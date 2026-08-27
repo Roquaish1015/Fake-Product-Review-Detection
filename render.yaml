@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: review-sentinel
+    env: docker
+    plan: free
+    region: oregon
+    healthCheckPath: /
