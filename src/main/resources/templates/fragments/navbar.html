@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="navbar">
+    <nav class="navbar-fixed scrolled" id="navbar">
+        <div class="navbar-content">
+            <a href="/" class="brand-logo">
+                <div class="brand-icon-mark">❖</div>
+                <span>REVIEW//SENTINEL</span>
+            </a>
+
+            <ul class="nav-menu-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/analyzer" class="nav-link">Analyzer</a></li>
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/history" class="nav-link">History Log</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="/history" class="btn-signin">History</a>
+                <a href="/analyzer" class="btn-glow-small">
+                    <span>Analyze a Review →</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+</body>
+</html>

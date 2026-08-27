@@ -1,0 +1,29 @@
+# Maven output
+target/
+*.jar
+*.war
+*.ear
+*.rar
+*.class
+
+# IDE & Editor files
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Scratch & temporary files
+scratch/
+*.tmp

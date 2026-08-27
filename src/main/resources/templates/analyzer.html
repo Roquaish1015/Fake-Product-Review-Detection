@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Analyzer & Link Scanner — REVIEW//SENTINEL</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/animations.css}">
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<div class="global-container" style="padding-top: 140px; padding-bottom: 100px;">
+    <!-- Navbar Fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main>
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <div class="hero-tag-mono">INTELLIGENCE ENGINE</div>
+            <h1 class="title-editorial">REVIEW <span class="text-gradient">ANALYZER</span></h1>
+            <p style="color: var(--text-muted-light); font-size: 1.15rem; max-width: 650px; margin: 1rem auto 0 auto;">
+                Analyze individual review text or paste any E-Commerce product link (Flipkart, Amazon, Myntra) for instant batch evaluation.
+            </p>
+        </div>
+
+        <!-- Analyzer Mode Selector Tabs -->
+        <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem;">
+            <button type="button" class="btn-nav-action" id="tabTextMode" onclick="switchAnalyzerMode('text')" style="padding: 0.8rem 1.8rem;">📝 TEXT REVIEW MODE</button>
+            <button type="button" class="btn-nav-action" id="tabUrlMode" onclick="switchAnalyzerMode('url')" style="padding: 0.8rem 1.8rem; background: transparent; border-color: var(--border-dark);">🛒 E-COMMERCE LINK MODE</button>
+        </div>
+
+        <!-- MODE 1: SINGLE REVIEW TEXT FORM (100% EMPTY ON LOAD) -->
+        <div id="textModePanel" style="max-width: 850px; margin: 0 auto; background: var(--bg-dark-surface); border: 1px solid var(--border-dark); border-radius: 24px; padding: 3rem;">
+            <form id="analyzerForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <label style="display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted-light); margin-bottom: 0.5rem;">PRODUCT NAME</label>
+                        <input type="text" id="productName" class="empty-input-field" placeholder="e.g. Wireless Headphones" required>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted-light); margin-bottom: 0.5rem;">REVIEW RATING</label>
+                        <select id="ratingInput" class="empty-input-field" required>
+                            <option value="" disabled selected>Select rating...</option>
+                            <option value="5">5 Stars (★★★★★)</option>
+                            <option value="4">4 Stars (★★★★☆)</option>
+                            <option value="3">3 Stars (★★★☆☆)</option>
+                            <option value="2">2 Stars (★★☆☆☆)</option>
+                            <option value="1">1 Star (★☆☆☆☆)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted-light); margin-bottom: 0.5rem;">REVIEW TITLE</label>
+                    <input type="text" id="reviewTitle" class="empty-input-field" placeholder="e.g. Amazing product title...">
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <label style="display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted-light); margin-bottom: 0.5rem;">REVIEW CONTENT</label>
+                    <textarea id="reviewContent" class="empty-input-field" rows="6" placeholder="Write or paste a product review..." required></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer; color: var(--text-muted-light); font-size: 0.95rem;">
+                        <input type="checkbox" id="verifiedPurchase">
+                        <span>Verified Purchaser</span>
+                    </label>
+
+                    <button type="submit" class="btn-nav-action" style="padding: 1rem 2.5rem; font-size: 1.05rem;">
+                        RUN AI ANALYSIS →
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- MODE 2: E-COMMERCE PRODUCT URL SCANNER FORM (100% EMPTY ON LOAD) -->
+        <div id="urlModePanel" style="max-width: 850px; margin: 0 auto; background: var(--bg-dark-surface); border: 1px solid var(--border-dark); border-radius: 24px; padding: 3rem; display: none;">
+            <form id="urlForm">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted-light); margin-bottom: 0.5rem;">E-COMMERCE PRODUCT LINK (Flipkart, Amazon, Myntra, Meesho)</label>
+                    <input type="url" id="productUrl" class="empty-input-field" placeholder="Paste product link e.g. https://www.flipkart.com/product/p/itm12345..." required>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                    <button type="button" class="btn-nav-action" style="font-size: 0.8rem; padding: 0.4rem 1rem;" onclick="setPresetUrl('flipkart')">🛒 Sample Flipkart Link</button>
+                    <button type="button" class="btn-nav-action" style="font-size: 0.8rem; padding: 0.4rem 1rem;" onclick="setPresetUrl('amazon')">📦 Sample Amazon Link</button>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn-nav-action" style="padding: 1rem 2.5rem; font-size: 1.05rem;">
+                        SCAN PRODUCT LINK →
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- E-Commerce URL Batch Report Container -->
+        <div id="urlReportSection" style="display: none; max-width: 1000px; margin: 3rem auto 0 auto;">
+            <div style="background: var(--bg-dark-surface); border: 1px solid var(--border-dark); border-radius: 24px; padding: 3rem; text-align: center; margin-bottom: 2rem;" id="urlReportVerdictCard">
+                <div style="font-size: 3rem; margin-bottom: 0.5rem;" id="urlVerdictIcon">⚠</div>
+                <h2 style="font-size: 2rem; color: var(--danger-red);" id="urlVerdictTitle">HIGH PROPORTION OF FAKE REVIEWS DETECTED</h2>
+                <div style="font-family: var(--font-mono); color: var(--accent-cyan); margin: 1rem 0;" id="urlProductNameText">Product: Product Link Scan</div>
+                <p style="color: var(--text-muted-light); font-size: 0.95rem;" id="urlPlatformText">Source: Flipkart • Scanned 5 Reviews</p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 3rem;">
+                <div style="background: var(--bg-dark-surface); border: 1px solid var(--border-dark); border-radius: 16px; padding: 1.5rem; text-align: center;">
+                    <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted-light);">OVERALL RISK SCORE</div>
+                    <div style="font-size: 2.2rem; font-weight: 800; color: var(--danger-red);" id="urlRiskScoreText">64%</div>
+                </div>
+                <div style="background: var(--bg-dark-surface); border: 1px solid var(--border-dark); border-radius: 16px; padding: 1.5rem; text-align: center;">
+                    <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted-light);">LIKELY FAKE</div>
+                    <div style="font-size: 2.2rem; font-weight: 800; color: var(--danger-red);" id="urlFakeCountText">2</div>
+                </div>
+                <div style="background: var(--bg-dark-surface); border: 1px solid var(--border-dark); border-radius: 16px; padding: 1.5rem; text-align: center;">
+                    <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted-light);">SUSPICIOUS</div>
+                    <div style="font-size: 2.2rem; font-weight: 800; color: var(--warning-yellow);" id="urlSuspiciousCountText">1</div>
+                </div>
+                <div style="background: var(--bg-dark-surface); border: 1px solid var(--border-dark); border-radius: 16px; padding: 1.5rem; text-align: center;">
+                    <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted-light);">GENUINE</div>
+                    <div style="font-size: 2.2rem; font-weight: 800; color: var(--success-green);" id="urlGenuineCountText">2</div>
+                </div>
+            </div>
+
+            <!-- Extracted Reviews Breakdown -->
+            <div class="hero-tag-mono" style="margin-bottom: 1.5rem;">EXTRACTED REVIEWS BREAKDOWN</div>
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;" id="urlExtractedReviewsGrid"></div>
+        </div>
+    </main>
+
+    <!-- Footer Fragment -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
+
+<!-- Scanning Overlay -->
+<div class="scan-overlay" id="scanOverlay">
+    <div class="scanner-box">
+        <div class="scan-circle-ring">
+            <svg viewBox="0 0 180 180">
+                <circle class="scan-circle-bg" cx="90" cy="90" r="80" />
+                <circle class="scan-circle-progress" cx="90" cy="90" r="80" />
+            </svg>
+            <div class="scan-percent" id="scanPercentText">0%</div>
+        </div>
+        <div class="scan-status-text" id="scanStatusText">INITIALIZING ENGINE...</div>
+        <div class="scan-progress-bar-bg">
+            <div class="scan-progress-bar-fill" id="scanProgressFill"></div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/analyzer.js}"></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Result - REVIEW//SENTINEL</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/animations.css}">
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<div class="app-container">
+    <!-- Navbar Fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="main-content">
+        <div class="result-header animate-fade-up">
+            <div class="result-badge-top">ANALYSIS COMPLETE</div>
+            <h1 class="page-title" th:text="${result.productName}">Product Name</h1>
+            <p style="color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.9rem;">
+                RATING: <span style="color: #FFB800;" th:text="${'★'.repeat(result.rating) + '☆'.repeat(5 - result.rating)}">★★★★★</span>
+                • <span th:text="${result.verifiedPurchase ? '✓ VERIFIED BUYER' : '⚠ UNVERIFIED PURCHASER'}">VERIFIED</span>
+            </p>
+        </div>
+
+        <!-- Huge Verdict Card -->
+        <div class="result-verdict-card animate-fade-up animate-delay-1"
+             th:style="'--card-glow-color: ' + (${result.verdict == 'LIKELY FAKE'} ? 'rgba(255, 59, 92, 0.2)' : (${result.verdict == 'SUSPICIOUS'} ? 'rgba(255, 184, 0, 0.2)' : 'rgba(0, 230, 118, 0.2)'))">
+            
+            <div class="verdict-icon"
+                 th:style="'color: ' + (${result.verdict == 'LIKELY FAKE'} ? '#FF3B5C' : (${result.verdict == 'SUSPICIOUS'} ? '#FFB800' : '#00E676'))"
+                 th:text="${result.verdictIcon}">
+                ⚠
+            </div>
+
+            <h2 class="verdict-title"
+                th:style="'color: ' + (${result.verdict == 'LIKELY FAKE'} ? '#FF3B5C' : (${result.verdict == 'SUSPICIOUS'} ? '#FFB800' : '#00E676'))"
+                th:text="${result.verdict}">
+                LIKELY FAKE
+            </h2>
+
+            <div class="verdict-score-ring-container">
+                <svg class="score-ring-svg" viewBox="0 0 200 200">
+                    <circle class="score-ring-bg" cx="100" cy="100" r="90" />
+                    <circle class="score-ring-circle" id="scoreRingCircle" cx="100" cy="100" r="90"
+                            th:style="'stroke: ' + (${result.verdict == 'LIKELY FAKE'} ? '#FF3B5C' : (${result.verdict == 'SUSPICIOUS'} ? '#FFB800' : '#00E676'))"
+                            th:data-score="${result.fakeProbability}" />
+                </svg>
+                <div class="score-number-wrapper">
+                    <span class="score-number"
+                          th:style="'color: ' + (${result.verdict == 'LIKELY FAKE'} ? '#FF3B5C' : (${result.verdict == 'SUSPICIOUS'} ? '#FFB800' : '#00E676'))"
+                          th:text="${#numbers.formatDecimal(result.fakeProbability, 1, 0) + '%'}">
+                        87%
+                    </span>
+                    <span class="score-label" th:text="${result.verdict == 'SUSPICIOUS' ? 'RISK SCORE' : 'FAKE PROBABILITY'}">FAKE PROBABILITY</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 Glass Metrics Cards -->
+        <div class="metrics-cards-grid animate-fade-up animate-delay-2">
+            <!-- Card 1: Sentiment -->
+            <div class="glass-card">
+                <div class="metric-card-title">SENTIMENT</div>
+                <div class="metric-card-value" style="color: var(--accent-cyan);" th:text="${result.sentiment}">VERY POSITIVE</div>
+                <div class="mini-progress-bar">
+                    <div class="mini-progress-fill" style="width: 88%; background: var(--accent-cyan);"></div>
+                </div>
+            </div>
+
+            <!-- Card 2: Review Quality -->
+            <div class="glass-card">
+                <div class="metric-card-title">REVIEW QUALITY</div>
+                <div class="metric-card-value" th:text="${result.reviewQuality + ' / 100'}">42 / 100</div>
+                <div class="mini-progress-bar">
+                    <div class="mini-progress-fill" th:style="'width: ' + ${result.reviewQuality} + '%; background: var(--accent-purple);'"></div>
+                </div>
+            </div>
+
+            <!-- Card 3: Risk Level -->
+            <div class="glass-card">
+                <div class="metric-card-title">RISK LEVEL</div>
+                <div class="metric-card-value"
+                     th:style="'color: ' + (${result.riskLevel == 'HIGH'} ? '#FF3B5C' : (${result.riskLevel == 'MEDIUM'} ? '#FFB800' : '#00E676'))"
+                     th:text="${result.riskLevel + ' ' + (result.riskLevel == 'HIGH' ? '⚠' : (result.riskLevel == 'MEDIUM' ? '◈' : '✓'))}">
+                    HIGH ⚠
+                </div>
+                <div class="mini-progress-bar">
+                    <div class="mini-progress-fill"
+                         th:style="'width: ' + (${result.riskLevel == 'HIGH'} ? '90%' : (${result.riskLevel == 'MEDIUM'} ? '60%' : '20%')) + '; background: ' + (${result.riskLevel == 'HIGH'} ? '#FF3B5C' : (${result.riskLevel == 'MEDIUM'} ? '#FFB800' : '#00E676'))">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Confidence -->
+            <div class="glass-card">
+                <div class="metric-card-title">CONFIDENCE</div>
+                <div class="metric-card-value" th:text="${#numbers.formatDecimal(result.confidence, 1, 0) + '%'}">91%</div>
+                <div class="mini-progress-bar">
+                    <div class="mini-progress-fill" th:style="'width: ' + ${result.confidence} + '%; background: var(--accent-violet);'"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detection Reasons Section -->
+        <div class="animate-fade-up animate-delay-3" th:if="${not #lists.isEmpty(result.signals)}">
+            <h3 class="section-title">
+                <span>⚠ DETECTED SIGNALS & REASONS</span>
+            </h3>
+            <div class="reasons-grid">
+                <div class="reason-card" th:each="sig : ${result.signals}">
+                    <div class="reason-icon" th:text="${sig.icon}">⚠</div>
+                    <div class="reason-content">
+                        <h4 th:text="${sig.title}">Excessive punctuation</h4>
+                        <p th:text="${sig.description}">The review contains an unusually high number of exclamation marks.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Text Highlight Section -->
+        <div class="animate-fade-up animate-delay-3">
+            <h3 class="section-title">
+                <span>🔍 REVIEW HIGHLIGHT ANALYSIS</span>
+            </h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.95rem;">
+                Hover over highlighted phrases to view detailed risk contribution scores.
+            </p>
+            <div class="highlight-container">
+                <div th:if="${result.reviewTitle != null and !result.reviewTitle.isEmpty()}" style="font-weight: 700; margin-bottom: 0.5rem;" th:text="${result.reviewTitle}">
+                    Review Title
+                </div>
+                <div th:utext="${result.highlightedHtml}">
+                    Original review content text...
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Action Buttons -->
+        <div style="display: flex; gap: 1.5rem; justify-content: center; margin: 3rem 0;">
+            <a href="/analyzer" class="btn-glow" style="padding: 1rem 2rem;">
+                <span>◉ ANALYZE ANOTHER REVIEW</span>
+            </a>
+            <a href="/history" class="btn-glow btn-glow-outline" style="padding: 1rem 2rem;">
+                <span>VIEW HISTORY LOGS →</span>
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer Fragment -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
+
+<script th:src="@{/js/app.js}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const ring = document.getElementById('scoreRingCircle');
+        if (ring) {
+            const score = parseFloat(ring.getAttribute('data-score')) || 0;
+            // Total circumference = 2 * PI * 90 ≈ 565.48
+            const strokeDashoffset = 565.48 - (565.48 * (score / 100));
+            setTimeout(() => {
+                ring.style.strokeDashoffset = strokeDashoffset;
+            }, 300);
+        }
+    });
+</script>
+</body>
+</html>

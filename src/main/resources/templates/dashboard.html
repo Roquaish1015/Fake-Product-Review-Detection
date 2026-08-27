@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - REVIEW//SENTINEL</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/animations.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<div class="app-container">
+    <!-- Navbar Fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="main-content">
+        <div class="analyzer-header animate-fade-up">
+            <div class="hero-tag">
+                <span>📊 SYSTEM METRICS</span>
+            </div>
+            <h1 class="page-title">SENTINEL <span class="text-gradient">ANALYTICS</span></h1>
+            <p class="page-subtitle">Real-time telemetry and risk breakdown of product reviews processed across the engine.</p>
+        </div>
+
+        <!-- 4 Summary Counter Cards -->
+        <div class="stat-summary-grid animate-fade-up animate-delay-1">
+            <div class="glass-card">
+                <div class="metric-card-title">REVIEWS ANALYZED</div>
+                <div class="stat-card-number" th:text="${#numbers.formatInteger(stats.totalReviews, 1, 'COMMA')}">1,284</div>
+                <div style="color: var(--accent-cyan); font-family: var(--font-mono); font-size: 0.8rem; margin-top: 0.5rem;">● SYSTEM ACTIVE</div>
+            </div>
+
+            <div class="glass-card" style="border-color: rgba(255, 59, 92, 0.3);">
+                <div class="metric-card-title">FAKE DETECTED</div>
+                <div class="stat-card-number" style="color: var(--danger-red);" th:text="${#numbers.formatInteger(stats.fakeDetected, 1, 'COMMA')}">387</div>
+                <div style="color: var(--danger-red); font-family: var(--font-mono); font-size: 0.8rem; margin-top: 0.5rem;">⚠ FLAG RATE ~30%</div>
+            </div>
+
+            <div class="glass-card" style="border-color: rgba(255, 184, 0, 0.3);">
+                <div class="metric-card-title">SUSPICIOUS</div>
+                <div class="stat-card-number" style="color: var(--warning-yellow);" th:text="${#numbers.formatInteger(stats.suspicious, 1, 'COMMA')}">216</div>
+                <div style="color: var(--warning-yellow); font-family: var(--font-mono); font-size: 0.8rem; margin-top: 0.5rem;">◈ MEDIUM RISK</div>
+            </div>
+
+            <div class="glass-card" style="border-color: rgba(0, 230, 118, 0.3);">
+                <div class="metric-card-title">GENUINE</div>
+                <div class="stat-card-number" style="color: var(--success-green);" th:text="${#numbers.formatInteger(stats.genuine, 1, 'COMMA')}">681</div>
+                <div style="color: var(--success-green); font-family: var(--font-mono); font-size: 0.8rem; margin-top: 0.5rem;">✓ AUTHENTICATED</div>
+            </div>
+        </div>
+
+        <!-- 4 Chart.js Visualizations Grid -->
+        <div class="charts-grid animate-fade-up animate-delay-2">
+            <!-- Chart 1: Verdict Distribution -->
+            <div class="glass-card chart-card">
+                <div class="chart-card-header">
+                    <h3 style="font-family: var(--font-heading); font-size: 1.2rem;">Verdict Distribution</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem;">Fake vs Suspicious vs Genuine proportion</p>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="verdictChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Risk Volume -->
+            <div class="glass-card chart-card">
+                <div class="chart-card-header">
+                    <h3 style="font-family: var(--font-heading); font-size: 1.2rem;">Risk Level Volume</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem;">High, Medium, and Low risk categorizations</p>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 3: Sentiment Distribution -->
+            <div class="glass-card chart-card">
+                <div class="chart-card-header">
+                    <h3 style="font-family: var(--font-heading); font-size: 1.2rem;">Sentiment Breakdown</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem;">Review sentiment distribution across corpus</p>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="sentimentChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 4: Reviews Over Time -->
+            <div class="glass-card chart-card">
+                <div class="chart-card-header">
+                    <h3 style="font-family: var(--font-heading); font-size: 1.2rem;">Analysis Volume (7 Days)</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem;">Product reviews evaluated daily</p>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Fragment -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
+
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

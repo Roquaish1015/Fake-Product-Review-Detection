@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review History - REVIEW//SENTINEL</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/animations.css}">
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<div class="app-container">
+    <!-- Navbar Fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="main-content">
+        <div class="analyzer-header animate-fade-up">
+            <div class="hero-tag">
+                <span>📜 SENTINEL LOG DATABASE</span>
+            </div>
+            <h1 class="page-title">ANALYSIS <span class="text-gradient">HISTORY</span></h1>
+            <p class="page-subtitle">Inspect historical product review evaluations, flagged threats, and detailed telemetry.</p>
+        </div>
+
+        <!-- History Controls & Filters -->
+        <div class="history-controls animate-fade-up animate-delay-1">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="historySearchInput" class="form-input" placeholder="Search by product name or keyword..." th:value="${currentSearch}">
+            </div>
+
+            <div class="filter-tabs">
+                <button class="filter-tab" th:classappend="${currentFilter == 'ALL' ? 'active' : ''}" onclick="filterByVerdict('ALL')">ALL</button>
+                <button class="filter-tab" th:classappend="${currentFilter == 'LIKELY GENUINE' ? 'active' : ''}" onclick="filterByVerdict('LIKELY-GENUINE')">GENUINE</button>
+                <button class="filter-tab" th:classappend="${currentFilter == 'SUSPICIOUS' ? 'active' : ''}" onclick="filterByVerdict('SUSPICIOUS')">SUSPICIOUS</button>
+                <button class="filter-tab" th:classappend="${currentFilter == 'LIKELY FAKE' ? 'active' : ''}" onclick="filterByVerdict('LIKELY-FAKE')">FAKE</button>
+            </div>
+        </div>
+
+        <!-- Review Cards Grid -->
+        <div class="history-grid animate-fade-up animate-delay-2" th:if="${not #lists.isEmpty(reviews)}">
+            <div class="glass-card history-card" th:each="rev : ${reviews}">
+                <div>
+                    <div class="history-card-header">
+                        <div>
+                            <div class="history-product-name" th:text="${rev.productName}">Product Name</div>
+                            <div style="color: #FFB800; font-size: 0.9rem;" th:text="${'★'.repeat(rev.rating) + '☆'.repeat(5 - rev.rating)}">★★★★★</div>
+                        </div>
+                        <span class="verdict-badge"
+                              th:classappend="${rev.verdict == 'LIKELY FAKE' ? 'badge-fake' : (rev.verdict == 'SUSPICIOUS' ? 'badge-suspicious' : 'badge-genuine')}"
+                              th:text="${rev.verdict + ' (' + #numbers.formatDecimal(rev.fakeProbability, 1, 0) + '%)'}">
+                            LIKELY FAKE (87%)
+                        </span>
+                    </div>
+
+                    <div class="history-snippet" th:text="${'“' + rev.originalText + '”'}">
+                        "Review content text snippet..."
+                    </div>
+                </div>
+
+                <div class="history-card-footer">
+                    <span class="history-date">SENTINEL LOG</span>
+                    <div class="history-actions">
+                        <button class="btn-icon btn-delete-review" th:data-id="${rev.reviewId}" title="Delete Record">🗑 Delete</button>
+                        <a th:href="@{'/result/' + ${rev.reviewId}}" class="btn-glow" style="padding: 0.4rem 0.9rem; font-size: 0.75rem;">
+                            <span>VIEW ANALYSIS →</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="glass-card" style="text-align: center; padding: 4rem 2rem;" th:if="${#lists.isEmpty(reviews)}">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+            <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem;">No Review Logs Found</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Try adjusting your search query or filter criteria.</p>
+            <a href="/analyzer" class="btn-glow">
+                <span>RUN NEW ANALYSIS →</span>
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer Fragment -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
+
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/history.js}"></script>
+</body>
+</html>

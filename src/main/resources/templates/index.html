@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REVIEW//SENTINEL — Review Intelligence</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/animations.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="technical-grid-overlay"></div>
+<div class="grain-overlay"></div>
+<canvas id="particles-canvas"></canvas>
+
+<!-- NAVBAR (Natural Breathing Space) -->
+<nav class="nav-minimal" id="navbar">
+    <div class="nav-inner">
+        <a href="/" class="brand-mark">
+            <span class="brand-dot">◉</span> REVIEW//SENTINEL
+        </a>
+
+        <ul class="nav-links-center">
+            <li><a href="#product" class="nav-link-item">Product</a></li>
+            <li><a href="#technology" class="nav-link-item">Technology</a></li>
+            <li><a href="#how-it-works" class="nav-link-item">How it works</a></li>
+            <li><a href="/dashboard" class="nav-link-item">Insights</a></li>
+        </ul>
+
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <a href="/history" class="nav-link-item">Sign in</a>
+            <a href="#live-analyzer" class="btn-nav-action" onclick="scrollToAnalyzer(event)">Analyze Review →</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO (Tight Natural Navbar-Hero Spacing) -->
+<header class="hero-centered-section global-container">
+    <div class="hero-tag-mono">REVIEW//SENTINEL • REVIEW INTELLIGENCE</div>
+    
+    <h1 class="title-hero" style="margin-top: 0.6rem;">
+        Know what <br>
+        <span class="text-gradient">you're reading.</span>
+    </h1>
+
+    <p class="hero-subtitle-large">
+        Understand the signals behind every product review.
+    </p>
+
+    <div>
+        <a href="#live-analyzer" class="btn-nav-action" style="padding: 1rem 2.5rem; font-size: 1rem;" onclick="scrollToAnalyzer(event)">ANALYZE A REVIEW →</a>
+    </div>
+
+    <!-- Mouse-Reactive Hero Orbital Review Intelligence Core -->
+    <div class="hero-orbital-field" id="heroOrbitalField">
+        <div class="ring-outer orbital-ring" id="ringOuter"></div>
+        <div class="ring-inner orbital-ring" id="ringInner"></div>
+
+        <div class="orbital-node node-top" id="nodeTop">LANGUAGE</div>
+        <div class="orbital-node node-left" id="nodeLeft">PATTERN</div>
+        <div class="orbital-node node-right" id="nodeRight">SENTIMENT</div>
+        <div class="orbital-node node-bottom" id="nodeBottom">SPECIFICITY</div>
+
+        <div class="hero-risk-core">
+            <div class="risk-core-number">78%</div>
+            <div class="risk-core-tag">RISK SIGNAL CORE</div>
+        </div>
+    </div>
+</header>
+
+<!-- SECTION 2 — FULL WIDTH STATEMENT -->
+<section class="full-width-statement-section">
+    <div class="global-container">
+        <h2 class="statement-title">
+            REVIEWS <br>
+            <span class="text-gradient">INFLUENCE DECISIONS.</span>
+        </h2>
+        <p class="statement-subtitle">
+            The challenge isn't finding more reviews. It's understanding which signals deserve your attention.
+        </p>
+    </div>
+</section>
+
+<!-- SECTION 3 — ASYMMETRIC EDITORIAL LAYOUT -->
+<section class="section-spacing global-container">
+    <div class="asymmetric-grid-3">
+        <div class="col-offset-1">
+            <div class="hero-tag-mono" style="color: var(--accent-purple-light);">01 / THE PROBLEM</div>
+        </div>
+        <div class="col-offset-2">
+            <h2 class="title-editorial">
+                Not every <br>
+                five-star story <br>
+                <span class="text-gradient-purple">tells the whole story.</span>
+            </h2>
+        </div>
+        <div class="col-offset-3">
+            <p style="color: var(--text-muted-light); font-size: 1.05rem; line-height: 1.7;">
+                Product reviews shape what people buy. But repeated language, exaggerated claims, and unusual review patterns can make genuine experiences difficult to distinguish.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 4 — LARGE VISUAL STORY -->
+<section class="section-spacing global-container">
+    <div class="split-visual-story">
+        <div class="large-visual-box">
+            <div class="hero-tag-mono" style="color: var(--danger-red);">PATTERN DETECTED</div>
+            <div style="font-size: 1.5rem; font-weight: 700; margin: 1rem 0;">"Absolutely perfect. Best product ever!!!"</div>
+            <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--danger-red);">+ HIGH PROMOTIONAL HYPERBOLE DETECTED</div>
+        </div>
+
+        <div>
+            <div class="hero-tag-mono">INTELLIGENCE SCAN</div>
+            <h2 class="title-editorial" style="font-size: 3rem; margin-bottom: 1.5rem;">
+                THE SIGNAL <br>
+                BEHIND THE WORDS
+            </h2>
+            <p style="color: var(--text-muted-light); font-size: 1.15rem; line-height: 1.7; margin-bottom: 2rem;">
+                A review can sound convincing while revealing patterns that deserve a closer look. REVIEW//SENTINEL uncovers hidden repetition, emotional intensity, and specificity gaps.
+            </p>
+            <a href="/analyzer" class="nav-link-item" style="color: var(--accent-cyan); font-weight: 600; font-size: 1.05rem;">Explore the analysis →</a>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 5 — INTERACTIVE ANALYZER CENTERPIECE WITH DUAL TABS & EMPTY INPUTS -->
+<section class="section-spacing global-container" id="live-analyzer">
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+        <div class="hero-tag-mono">INTERACTIVE ENGINE</div>
+        <h2 class="title-editorial">
+            PUT A REVIEW <br>
+            <span class="text-gradient">UNDER THE MICROSCOPE.</span>
+        </h2>
+    </div>
+
+    <div class="analyzer-centerpiece" id="analyzerCenterpiece">
+        <!-- Dual Mode Tabs -->
+        <div class="analyzer-tab-bar">
+            <button type="button" class="analyzer-tab-btn active" id="btnTabWrite" onclick="switchAnalysisTab('write')">WRITE A REVIEW</button>
+            <button type="button" class="analyzer-tab-btn" id="btnTabUrl" onclick="switchAnalysisTab('url')">ANALYZE URL</button>
+        </div>
+
+        <div class="analyzer-split-grid">
+            <!-- Left Mode Panels (100% EMPTY ON LOAD) -->
+            <div>
+                <!-- TAB 1: WRITE A REVIEW -->
+                <form id="heroAnalyzerForm">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted-light); margin-bottom: 0.5rem;">PRODUCT NAME</label>
+                        <input type="text" id="heroProduct" class="empty-input-field" placeholder="Enter product name" required>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted-light); margin-bottom: 0.5rem;">RATING</label>
+                        <!-- Interactive 5-Star Rating Selector (Outline ☆ ☆ ☆ ☆ ☆) -->
+                        <div class="star-rating-box" id="starRatingSelector">
+                            <span class="star-symbol" data-value="1">☆</span>
+                            <span class="star-symbol" data-value="2">☆</span>
+                            <span class="star-symbol" data-value="3">☆</span>
+                            <span class="star-symbol" data-value="4">☆</span>
+                            <span class="star-symbol" data-value="5">☆</span>
+                        </div>
+                        <input type="hidden" id="heroRatingValue" value="5">
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted-light); margin-bottom: 0.5rem;">REVIEW TITLE</label>
+                        <input type="text" id="heroTitle" class="empty-input-field" placeholder="Enter review title">
+                    </div>
+
+                    <div style="margin-bottom: 1.8rem;">
+                        <label style="display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted-light); margin-bottom: 0.5rem;">REVIEW CONTENT</label>
+                        <textarea id="heroReview" class="empty-input-field" rows="4" placeholder="Paste or write the review..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-nav-action" style="width: 100%; text-align: center; padding: 1.1rem; font-size: 1rem;">
+                        RUN ANALYSIS →
+                    </button>
+                </form>
+
+                <!-- TAB 2: ANALYZE FROM URL -->
+                <form id="heroUrlForm" style="display: none;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">ANALYZE FROM URL</h3>
+                        <p style="color: var(--text-muted-light); font-size: 0.95rem; margin-bottom: 1.5rem;">
+                            Paste a product review URL (Flipkart, Amazon, Myntra, etc.) and REVIEW//SENTINEL will process it for analysis.
+                        </p>
+                        <div style="position: relative;">
+                            <input type="url" id="heroProductUrl" class="empty-input-field" placeholder="Paste product review URL..." style="padding-left: 3rem;" required>
+                            <span style="position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); font-size: 1.1rem; color: var(--accent-cyan);">🔗</span>
+                        </div>
+                    </div>
+
+                    <div id="urlValidationNotice" style="display: none; margin-bottom: 1.5rem; padding: 1rem; border-radius: 8px; font-size: 0.9rem; font-family: var(--font-mono);"></div>
+
+                    <button type="submit" class="btn-nav-action" style="width: 100%; text-align: center; padding: 1.1rem; font-size: 1rem;">
+                        ANALYZE URL →
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Output State -->
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem;">
+                <div id="initialWaitingState">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; border: 1px dashed var(--accent-cyan); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; font-size: 1.8rem; color: var(--accent-cyan);">
+                        ❖
+                    </div>
+                    <div class="hero-tag-mono">REVIEW SIGNAL ENGINE</div>
+                    <div style="font-weight: 700; font-size: 1.2rem; color: #FFF; margin-bottom: 0.5rem;">Waiting for input</div>
+                    <div style="color: var(--text-muted-light); font-size: 0.95rem; max-width: 280px;">
+                        Enter review text or analyze a product URL to begin.
+                    </div>
+                </div>
+
+                <!-- Revealed Analysis Result -->
+                <div id="revealedResultState" style="display: none; width: 100%;">
+                    <div class="hero-tag-mono" id="revealedVerdict" style="color: var(--danger-red); font-size: 1.2rem; font-weight: 700;">SUSPICIOUS</div>
+                    <div style="font-family: var(--font-display); font-size: 4.8rem; font-weight: 800; color: var(--danger-red);" id="revealedScore">78%</div>
+                    <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted-light); margin-bottom: 2rem;">OVERALL RISK SCORE</div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; border-top: 1px solid var(--border-dark); padding-top: 1.5rem; text-align: left;">
+                        <div>
+                            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted-dark);">LANGUAGE SIGNAL</div>
+                            <div style="font-size: 1.2rem; font-weight: 700;">82 / 100</div>
+                        </div>
+                        <div>
+                            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted-dark);">SPECIFICITY</div>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--danger-red);">31 / 100</div>
+                        </div>
+                        <div>
+                            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted-dark);">REPETITION</div>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--warning-yellow);">67 / 100</div>
+                        </div>
+                        <div>
+                            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted-dark);">EMOTION</div>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--danger-red);">89 / 100</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 6 — SCROLL-BASED STICKY ANALYSIS -->
+<section class="section-spacing global-container">
+    <div class="sticky-scroll-wrapper">
+        <div class="sticky-visual-column">
+            <div class="hero-tag-mono">REVIEW SIGNAL ENGINE</div>
+            <div style="font-family: var(--font-display); font-size: 3.5rem; font-weight: 800; color: var(--accent-purple-light);" id="stickyStepTitle">01 / LANGUAGE</div>
+        </div>
+
+        <div>
+            <div class="scroll-step-item active-step">
+                <div class="step-num-code">01 — LANGUAGE</div>
+                <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Linguistic Structure Scan</h3>
+                <p style="color: var(--text-muted-light); font-size: 1.05rem;">Evaluates promotional syntax, unnatural superlatives, and marketing hype.</p>
+            </div>
+
+            <div class="scroll-step-item">
+                <div class="step-num-code">02 — SENTIMENT</div>
+                <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Emotional Synergy</h3>
+                <p style="color: var(--text-muted-light); font-size: 1.05rem;">Measures if emotional intensity aligns with product rating.</p>
+            </div>
+
+            <div class="scroll-step-item">
+                <div class="step-num-code">03 — REPETITION</div>
+                <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Templated Words</h3>
+                <p style="color: var(--text-muted-light); font-size: 1.05rem;">Detects repetitive phrases and bot-like structural patterns.</p>
+            </div>
+
+            <div class="scroll-step-item">
+                <div class="step-num-code">04 — SPECIFICITY</div>
+                <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Feature Context</h3>
+                <p style="color: var(--text-muted-light); font-size: 1.05rem;">Identifies real-world product usage details versus vague praise.</p>
+            </div>
+
+            <div class="scroll-step-item">
+                <div class="step-num-code">05 — RISK SCORE</div>
+                <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Explainable Verdict</h3>
+                <p style="color: var(--text-muted-light); font-size: 1.05rem;">Combines weighted signals into a transparent percentage score.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 7 — SPLIT REVIEW COMPARISON -->
+<section class="section-spacing global-container">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <div class="hero-tag-mono">SIDE-BY-SIDE COMPARISON</div>
+        <h2 class="title-editorial">DETAIL CHANGES EVERYTHING.</h2>
+    </div>
+
+    <div class="fullscreen-comparison-grid">
+        <div class="comparison-box-left">
+            <div class="hero-tag-mono" style="color: var(--danger-red);">HIGH-RISK SIGNAL</div>
+            <div style="color: #FFB800; margin-bottom: 1rem;">★★★★★</div>
+            <p style="font-size: 1.35rem; line-height: 1.6;">
+                "<span class="highlight-high-risk">AMAZING!!!</span> <span class="highlight-high-risk">PERFECT!!!</span> <span class="highlight-high-risk">BEST PRODUCT EVER!!!</span> <span class="highlight-high-risk">EVERYONE NEEDS THIS!!!</span>"
+            </p>
+        </div>
+
+        <div class="comparison-box-right">
+            <div class="hero-tag-mono" style="color: var(--accent-cyan);">DETAILED EXPERIENCE</div>
+            <div style="color: #FFB800; margin-bottom: 1rem;">★★★★★</div>
+            <p style="font-size: 1.35rem; line-height: 1.6;">
+                "After <span class="highlight-detailed">three weeks of use</span>, the battery lasts around <span class="highlight-detailed">eight hours</span>. The <span class="highlight-detailed">microphone is clear</span>, although the ear cushions become warm during longer sessions."
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 8 — FEATURES (TYPOGRAPHIC COMPOSITION) -->
+<section class="section-spacing global-container" style="text-align: center;">
+    <div class="hero-tag-mono">DETECTION ENGINE</div>
+    <h2 class="title-editorial" style="margin-bottom: 4rem;">WHAT WE LOOK FOR</h2>
+
+    <div style="position: relative; max-width: 850px; margin: 0 auto; height: 350px; display: flex; justify-content: center; align-items: center;">
+        <div style="position: absolute; top: 10px; font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--accent-cyan);">LANGUAGE PATTERNS</div>
+        <div style="position: absolute; bottom: 10px; font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--danger-red);">RISK SCORING</div>
+        <div style="position: absolute; left: 10px; font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--accent-purple-light);">REPETITION</div>
+        <div style="position: absolute; right: 10px; font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--warning-yellow);">SENTIMENT</div>
+
+        <div style="background: var(--accent-purple); color: #FFF; padding: 2rem 3rem; border-radius: 50%; font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; box-shadow: 0 0 50px rgba(124, 58, 237, 0.5);">
+            CORE
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 9 — DATA ART VISUALIZATION -->
+<section class="section-spacing global-container" id="dashboard-preview">
+    <div class="hero-tag-mono">TELEMETRY</div>
+    <h2 class="title-editorial">
+        FROM ONE REVIEW <br>
+        <span class="text-gradient">TO THE BIGGER PICTURE.</span>
+    </h2>
+
+    <div style="margin-top: 3rem; background: var(--bg-surface-dark); border: 1px solid var(--border-dark); border-radius: 28px; padding: 3rem; height: 400px;">
+        <canvas id="previewChart"></canvas>
+    </div>
+</section>
+
+<!-- SECTION 10 — LIGHT EDITORIAL SECTION (#F4F3EF) -->
+<section class="light-editorial-section" id="how-it-works">
+    <div class="global-container">
+        <div class="hero-tag-mono" style="color: var(--accent-purple);">SIMPLICITY BY DESIGN</div>
+        <h2 class="title-editorial" style="color: var(--text-black);">
+            SIMPLE TO USE. <br>
+            SERIOUS UNDER THE SURFACE.
+        </h2>
+
+        <div class="light-editorial-grid">
+            <div>
+                <div class="giant-editorial-num">01</div>
+                <h3 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 0.8rem;">Read</h3>
+                <p style="color: var(--text-black-muted); font-size: 1.05rem;">The system parses sentence structure, punctuation density, and vocabulary.</p>
+            </div>
+            <div>
+                <div class="giant-editorial-num">02</div>
+                <h3 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 0.8rem;">Analyze</h3>
+                <p style="color: var(--text-black-muted); font-size: 1.05rem;">Repetition, promotional hyperbole, feature specificity, and sentiment are cross-evaluated.</p>
+            </div>
+            <div>
+                <div class="giant-editorial-num">03</div>
+                <h3 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 0.8rem;">Understand</h3>
+                <p style="color: var(--text-black-muted); font-size: 1.05rem;">Translates multi-factor signals into an intuitive, explainable risk score.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 11 — TECHNOLOGY -->
+<section class="section-spacing global-container" id="technology">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <div class="hero-tag-mono">ARCHITECTURE</div>
+        <h2 class="title-editorial">EXPLAINABLE BY DESIGN.</h2>
+    </div>
+
+    <div style="background: var(--bg-surface-dark); border: 1px solid var(--border-dark); border-radius: 24px; padding: 3rem; text-align: center;">
+        <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 2rem; font-family: var(--font-display); font-size: 1.2rem; font-weight: 700;">
+            <span>REVIEW</span>
+            <span style="color: var(--accent-cyan);">↓</span>
+            <span>LANGUAGE SIGNALS</span>
+            <span style="color: var(--accent-cyan);">↓</span>
+            <span>PATTERN SIGNALS</span>
+            <span style="color: var(--accent-cyan);">↓</span>
+            <span style="color: var(--danger-red);">RISK ENGINE</span>
+            <span style="color: var(--accent-cyan);">↓</span>
+            <span style="color: var(--success-green);">EXPLAINED RESULT</span>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 12 — GIANT STATISTICS -->
+<section class="section-spacing global-container">
+    <div class="giant-stats-row">
+        <div>
+            <div class="giant-stat-number text-gradient">10K+</div>
+            <div class="hero-tag-mono">REVIEWS</div>
+        </div>
+        <div style="transform: translateY(30px);">
+            <div class="giant-stat-number text-gradient-purple">06</div>
+            <div class="hero-tag-mono">SIGNAL TYPES</div>
+        </div>
+        <div style="transform: translateY(-20px);">
+            <div class="giant-stat-number text-gradient">100%</div>
+            <div class="hero-tag-mono">EXPLAINABLE</div>
+        </div>
+        <div style="transform: translateY(20px);">
+            <div class="giant-stat-number text-gradient-purple">01</div>
+            <div class="hero-tag-mono">CLEAR RESULT</div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 13 — FINAL CTA -->
+<section class="final-floating-cta global-container">
+    <h2 class="title-hero" style="font-size: clamp(3rem, 6vw, 6rem);">
+        QUESTION <br>
+        THE SIGNAL. <br>
+        <span class="text-gradient">UNDERSTAND THE REVIEW.</span>
+    </h2>
+
+    <div style="margin-top: 3rem;">
+        <a href="#live-analyzer" class="btn-nav-action" style="padding: 1.2rem 3.5rem; font-size: 1.1rem;" onclick="scrollToAnalyzer(event)">START ANALYSIS →</a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer-wide global-container">
+    <div class="footer-wide-grid">
+        <div>
+            <a href="/" class="brand-mark" style="font-size: 1.3rem;">
+                <span class="brand-dot">◉</span> REVIEW//SENTINEL
+            </a>
+            <p style="color: var(--text-muted-light); margin-top: 1rem; max-width: 320px; font-size: 0.95rem;">
+                Know what you're reading. Review intelligence that helps you separate authentic customer experiences from suspicious patterns.
+            </p>
+        </div>
+
+        <div>
+            <div class="hero-tag-mono" style="color: var(--text-white);">PRODUCT</div>
+            <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem;">
+                <a href="/analyzer" class="nav-link-item">Analyzer</a>
+                <a href="/dashboard" class="nav-link-item">Dashboard</a>
+                <a href="/history" class="nav-link-item">History Log</a>
+            </div>
+        </div>
+
+        <div>
+            <div class="hero-tag-mono" style="color: var(--text-white);">EXPLORE</div>
+            <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem;">
+                <a href="#how-it-works" class="nav-link-item">How it works</a>
+                <a href="#technology" class="nav-link-item">Technology</a>
+                <a href="#live-analyzer" class="nav-link-item">Live Demo</a>
+            </div>
+        </div>
+
+        <div>
+            <div class="hero-tag-mono" style="color: var(--text-white);">PROJECT</div>
+            <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem;">
+                <a href="/README.md" class="nav-link-item">Methodology</a>
+                <a href="/h2-console" class="nav-link-item">H2 Console</a>
+            </div>
+        </div>
+    </div>
+
+    <div style="border-top: 1px solid var(--border-dark); padding-top: 2rem; display: flex; justify-content: space-between; color: var(--text-muted-dark); font-size: 0.85rem;">
+        <div>© 2026 REVIEW//SENTINEL. All rights reserved.</div>
+        <div>Built for intelligent review analysis.</div>
+    </div>
+</footer>
+
+<script th:src="@{/js/app.js}"></script>
+<script>
+function scrollToAnalyzer(e) {
+    e.preventDefault();
+    const el = document.getElementById('live-analyzer');
+    if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        const card = document.getElementById('analyzerCenterpiece');
+        if (card) {
+            card.classList.add('highlight-pulse');
+            setTimeout(() => card.classList.remove('highlight-pulse'), 1500);
+        }
+    }
+}
+
+function switchAnalysisTab(tab) {
+    const btnWrite = document.getElementById('btnTabWrite');
+    const btnUrl = document.getElementById('btnTabUrl');
+    const formText = document.getElementById('heroAnalyzerForm');
+    const formUrl = document.getElementById('heroUrlForm');
+
+    if (tab === 'url') {
+        btnWrite.classList.remove('active');
+        btnUrl.classList.add('active');
+        formText.style.display = 'none';
+        formUrl.style.display = 'block';
+    } else {
+        btnWrite.classList.add('active');
+        btnUrl.classList.remove('active');
+        formText.style.display = 'block';
+        formUrl.style.display = 'none';
+    }
+}
+</script>
+</body>
+</html>

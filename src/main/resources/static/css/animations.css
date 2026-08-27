@@ -1,0 +1,99 @@
+/* REVIEW//SENTINEL - Keyframe Animations CSS */
+
+@keyframes rotateCW {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotateCCW {
+    from {
+        transform: rotate(360deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes corePulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 35px rgba(124, 58, 237, 0.5), inset 0 0 20px rgba(0, 229, 255, 0.3);
+    }
+    50% {
+        transform: scale(1.06);
+        box-shadow: 0 0 60px rgba(0, 229, 255, 0.7), inset 0 0 35px rgba(124, 58, 237, 0.5);
+    }
+}
+
+@keyframes floatOrbit {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+    }
+    50% {
+        transform: translateY(-12px) scale(1.05);
+    }
+}
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes laserScan {
+    0% {
+        top: 0%;
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        top: 100%;
+        opacity: 0.8;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes numberCounter {
+    from {
+        content: "0";
+    }
+    to {
+        content: attr(data-target);
+    }
+}
+
+.animate-fade-up {
+    animation: fadeSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-delay-1 { animation-delay: 0.15s; }
+.animate-delay-2 { animation-delay: 0.3s; }
+.animate-delay-3 { animation-delay: 0.45s; }
