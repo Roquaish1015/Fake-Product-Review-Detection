@@ -1,0 +1,8 @@
+[build]
+  publish = "public"
+  command = "mkdir -p public/css public/js && cp -r src/main/resources/static/* public/ && cp src/main/resources/templates/index.html public/index.html && cp src/main/resources/templates/analyzer.html public/analyzer.html && cp src/main/resources/templates/dashboard.html public/dashboard.html && cp src/main/resources/templates/history.html public/history.html && cp src/main/resources/templates/result.html public/result.html"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
