@@ -224,50 +224,12 @@ public class UrlProductExtractor {
         return "E-Commerce Product";
     }
 
+    /**
+     * Review scraping is not implemented yet. Never fabricate review content and
+     * report it as if it came from the supplied product page.
+     */
     private List<Map<String, Object>> generateReviewsForUrl(String productName, String platform) {
-        List<Map<String, Object>> list = new ArrayList<>();
-
-        // Candidate 1: Suspicious / Fake Review
-        list.add(Map.of(
-                "title", "Amazing amazing product!!!",
-                "content", "Amazing amazing amazing product!!! Best thing ever!!! 100% perfect!!! Must buy right now on " + platform + " 5 stars!!!",
-                "rating", 5,
-                "verified", false
-        ));
-
-        // Candidate 2: Genuine Review
-        list.add(Map.of(
-                "title", "Good build quality after 3 weeks",
-                "content", "I ordered this " + productName + " on " + platform + " 3 weeks ago. Build quality feels sturdy, battery performance is around 18 hours, and sound output is clear. Delivery took 4 days.",
-                "rating", 4,
-                "verified", true
-        ));
-
-        // Candidate 3: Promotional Bot Review
-        list.add(Map.of(
-                "title", "Must buy product",
-                "content", "Best product ever made! Life changing quality, 100% recommended to everyone. Buy it today without hesitation!",
-                "rating", 5,
-                "verified", false
-        ));
-
-        // Candidate 4: Genuine Review with Minor Criticism
-        list.add(Map.of(
-                "title", "Decent value for price",
-                "content", "Packaging was slightly dented upon arrival, but the product inside works as advertised. Setup was easy and buttons are responsive. Satisfied for the price point.",
-                "rating", 4,
-                "verified", true
-        ));
-
-        // Candidate 5: Generic Short Praise
-        list.add(Map.of(
-                "title", "Love it",
-                "content", "Super product works well very happy with purchase.",
-                "rating", 5,
-                "verified", false
-        ));
-
-        return list;
+        return Collections.emptyList();
     }
 
     private String capitalizeWords(String str) {
