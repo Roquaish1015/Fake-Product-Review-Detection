@@ -132,7 +132,10 @@ public class UrlProductExtractor {
         String overallVerdict;
         String verdictIcon;
 
-        if (avgRisk <= 35) {
+        if (analyzedList.isEmpty()) {
+            overallVerdict = "NO REVIEWS EXTRACTED";
+            verdictIcon = "ℹ";
+        } else if (avgRisk <= 35) {
             overallVerdict = "LIKELY GENUINE PRODUCT REVIEWS";
             verdictIcon = "✓";
         } else if (avgRisk <= 60) {
