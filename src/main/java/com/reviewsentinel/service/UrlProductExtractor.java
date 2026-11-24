@@ -72,9 +72,10 @@ public class UrlProductExtractor {
         }
 
         String cleanedUrl = rawUrl.trim();
-        if (!cleanedUrl.startsWith("http://") && !cleanedUrl.startsWith("https://")) {
-            cleanedUrl = "https://" + cleanedUrl;
+        if (!cleanedUrl.matches("(?i)^https://.*")) {
+            throw new IllegalArgumentException("Only HTTPS product URLs are supported.");
         }
+        validateProductUrl(cleanedUrl);
 
         String platform = detectPlatform(cleanedUrl);
         String productName = extractProductNameFromUrl(cleanedUrl);
@@ -84,6 +85,8 @@ public class UrlProductExtractor {
             Document doc = Jsoup.connect(cleanedUrl)
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                     .timeout(5000)
+                    .maxBodySize(1_048_576)
+                    .followRedirects(false)
                     .get();
 
             String title = doc.title();
@@ -154,6 +157,41 @@ public class UrlProductExtractor {
         report.setAnalyzedReviews(analyzedList);
 
         return report;
+    }
+
+    /**
+     * Restrict outbound scraping to known commerce hosts. Redirects are disabled
+     * above so a trusted storefront cannot redirect the scraper to an internal host.
+     */
+    private void validateProductUrl(String rawUrl) {
+        try {
+            URI uri = new URI(rawUrl);
+            String host = uri.getHost();
+            if (host == null || uri.getUserInfo() != null || (uri.getPort() != -1 && uri.getPort() != 443)) {
+                throw new IllegalArgumentException("Invalid product URL.");
+            }
+
+            String normalizedHost = host.toLowerCase(Locale.ROOT);
+            if (normalizedHost.equals("localhost")
+                    || normalizedHost.endsWith(".localhost")
+                    || normalizedHost.endsWith(".local")
+                    || normalizedHost.matches("\\d{1,3}(\\.\\d{1,3}){3}")
+                    || normalizedHost.contains(":")) {
+                throw new IllegalArgumentException("Local and IP-address URLs are not allowed.");
+            }
+
+            List<String> allowedDomains = Arrays.asList(
+                    "amazon.com", "amazon.in", "flipkart.com", "ebay.com",
+                    "meesho.com", "myntra.com", "snapdeal.com"
+            );
+            boolean allowed = allowedDomains.stream().anyMatch(domain ->
+                    normalizedHost.equals(domain) || normalizedHost.endsWith("." + domain));
+            if (!allowed) {
+                throw new IllegalArgumentException("Unsupported store. Use a supported Amazon, Flipkart, eBay, Meesho, Myntra, or Snapdeal URL.");
+            }
+        } catch (java.net.URISyntaxException ex) {
+            throw new IllegalArgumentException("Invalid product URL.", ex);
+        }
     }
 
     private String detectPlatform(String url) {
