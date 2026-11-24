@@ -72,9 +72,10 @@ public class UrlProductExtractor {
         }
 
         String cleanedUrl = rawUrl.trim();
-        if (!cleanedUrl.startsWith("http://") && !cleanedUrl.startsWith("https://")) {
-            cleanedUrl = "https://" + cleanedUrl;
+        if (!cleanedUrl.matches("(?i)^https://.*")) {
+            throw new IllegalArgumentException("Only HTTPS product URLs are supported.");
         }
+        validateProductUrl(cleanedUrl);
 
         String platform = detectPlatform(cleanedUrl);
         String productName = extractProductNameFromUrl(cleanedUrl);
@@ -84,6 +85,8 @@ public class UrlProductExtractor {
             Document doc = Jsoup.connect(cleanedUrl)
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                     .timeout(5000)
+                    .maxBodySize(1_048_576)
+                    .followRedirects(false)
                     .get();
 
             String title = doc.title();
@@ -129,7 +132,10 @@ public class UrlProductExtractor {
         String overallVerdict;
         String verdictIcon;
 
-        if (avgRisk <= 35) {
+        if (analyzedList.isEmpty()) {
+            overallVerdict = "NO REVIEWS EXTRACTED";
+            verdictIcon = "ℹ";
+        } else if (avgRisk <= 35) {
             overallVerdict = "LIKELY GENUINE PRODUCT REVIEWS";
             verdictIcon = "✓";
         } else if (avgRisk <= 60) {
@@ -154,6 +160,41 @@ public class UrlProductExtractor {
         report.setAnalyzedReviews(analyzedList);
 
         return report;
+    }
+
+    /**
+     * Restrict outbound scraping to known commerce hosts. Redirects are disabled
+     * above so a trusted storefront cannot redirect the scraper to an internal host.
+     */
+    private void validateProductUrl(String rawUrl) {
+        try {
+            URI uri = new URI(rawUrl);
+            String host = uri.getHost();
+            if (host == null || uri.getUserInfo() != null || (uri.getPort() != -1 && uri.getPort() != 443)) {
+                throw new IllegalArgumentException("Invalid product URL.");
+            }
+
+            String normalizedHost = host.toLowerCase(Locale.ROOT);
+            if (normalizedHost.equals("localhost")
+                    || normalizedHost.endsWith(".localhost")
+                    || normalizedHost.endsWith(".local")
+                    || normalizedHost.matches("\\d{1,3}(\\.\\d{1,3}){3}")
+                    || normalizedHost.contains(":")) {
+                throw new IllegalArgumentException("Local and IP-address URLs are not allowed.");
+            }
+
+            List<String> allowedDomains = Arrays.asList(
+                    "amazon.com", "amazon.in", "flipkart.com", "ebay.com",
+                    "meesho.com", "myntra.com", "snapdeal.com"
+            );
+            boolean allowed = allowedDomains.stream().anyMatch(domain ->
+                    normalizedHost.equals(domain) || normalizedHost.endsWith("." + domain));
+            if (!allowed) {
+                throw new IllegalArgumentException("Unsupported store. Use a supported Amazon, Flipkart, eBay, Meesho, Myntra, or Snapdeal URL.");
+            }
+        } catch (java.net.URISyntaxException ex) {
+            throw new IllegalArgumentException("Invalid product URL.", ex);
+        }
     }
 
     private String detectPlatform(String url) {
@@ -186,50 +227,12 @@ public class UrlProductExtractor {
         return "E-Commerce Product";
     }
 
+    /**
+     * Review scraping is not implemented yet. Never fabricate review content and
+     * report it as if it came from the supplied product page.
+     */
     private List<Map<String, Object>> generateReviewsForUrl(String productName, String platform) {
-        List<Map<String, Object>> list = new ArrayList<>();
-
-        // Candidate 1: Suspicious / Fake Review
-        list.add(Map.of(
-                "title", "Amazing amazing product!!!",
-                "content", "Amazing amazing amazing product!!! Best thing ever!!! 100% perfect!!! Must buy right now on " + platform + " 5 stars!!!",
-                "rating", 5,
-                "verified", false
-        ));
-
-        // Candidate 2: Genuine Review
-        list.add(Map.of(
-                "title", "Good build quality after 3 weeks",
-                "content", "I ordered this " + productName + " on " + platform + " 3 weeks ago. Build quality feels sturdy, battery performance is around 18 hours, and sound output is clear. Delivery took 4 days.",
-                "rating", 4,
-                "verified", true
-        ));
-
-        // Candidate 3: Promotional Bot Review
-        list.add(Map.of(
-                "title", "Must buy product",
-                "content", "Best product ever made! Life changing quality, 100% recommended to everyone. Buy it today without hesitation!",
-                "rating", 5,
-                "verified", false
-        ));
-
-        // Candidate 4: Genuine Review with Minor Criticism
-        list.add(Map.of(
-                "title", "Decent value for price",
-                "content", "Packaging was slightly dented upon arrival, but the product inside works as advertised. Setup was easy and buttons are responsive. Satisfied for the price point.",
-                "rating", 4,
-                "verified", true
-        ));
-
-        // Candidate 5: Generic Short Praise
-        list.add(Map.of(
-                "title", "Love it",
-                "content", "Super product works well very happy with purchase.",
-                "rating", 5,
-                "verified", false
-        ));
-
-        return list;
+        return Collections.emptyList();
     }
 
     private String capitalizeWords(String str) {

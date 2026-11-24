@@ -13,10 +13,10 @@
 ## 📸 Overview & Features
 
 ### 🔍 Core Capabilities
-* **Interactive AI Analyzer**: Scan raw review content or full product URLs (Amazon, Flipkart, eBay, Meesho, etc.) to evaluate fake probability and authenticity.
+* **Interactive Review Analyzer**: Scan raw review content to evaluate heuristic risk signals. Supported storefront URLs can be validated, but actual review extraction is not yet implemented.
 * **Deterministic Heuristic Detection Engine**: Multi-dimensional rule engine assessing punctuation density, shouting ratios, consecutive repetitions, promotional hyperbole, review length, specificity nouns, and buyer verification status.
 * **Phrase-Level Risk Highlighting**: Interactive text highlighting with risk-score tooltips explaining exact suspicious phrases detected in the text.
-* **E-Commerce URL Batch Extraction**: Scrapes product titles and reviews from live product pages using JSoup and evaluates batch sentiment and fake probability.
+* **E-Commerce URL Validation**: Validates supported HTTPS storefront URLs and fetches page metadata with bounded response size. Review extraction is not yet implemented; the URL analyzer clearly reports when no reviews were extracted instead of inventing sample reviews.
 * **Cybersecurity Dashboard**: Real-time stats and dark-themed Chart.js visualizations for verdict distribution, risk categorization, sentiment breakdown, and 7-day volume trends.
 * **History Log & Management**: Full historical record of evaluated reviews with search, category filtering (Likely Fake, Suspicious, Genuine), and instant deletion capabilities.
 * **Zero-Config Embedded Setup**: Embedded H2 database pre-populated with initial seed data on startup.
